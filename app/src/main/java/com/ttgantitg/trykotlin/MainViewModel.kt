@@ -3,18 +3,16 @@ package com.ttgantitg.trykotlin
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ttgantitg.trykotlin.data.NotesRepository
 
 class MainViewModel: ViewModel() {
 
-    private val viewStateLiveData: MutableLiveData<String> = MutableLiveData()
+    private val viewStateLiveData: MutableLiveData<MainViewState> = MutableLiveData()
 
     init {
-        viewStateLiveData.value = "0"
+        viewStateLiveData.value = MainViewState(NotesRepository.getNotes())
     }
 
-    fun getViewStateLiveData(): LiveData<String> = viewStateLiveData
+    fun viewState(): LiveData<MainViewState> = viewStateLiveData
 
-    fun generateNewNumber() {
-        viewStateLiveData.value = (Math.random() * 10).toInt().toString()
-    }
 }
