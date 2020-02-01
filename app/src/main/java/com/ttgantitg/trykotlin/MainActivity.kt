@@ -1,26 +1,32 @@
 package com.ttgantitg.trykotlin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    lateinit var viewModel: MainViewModel
+    lateinit var adapter: NotesRVAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        val liveData = viewModel.getViewStateLiveData()
 
-        liveData.observe(this, Observer { textView.text = it })
+        rv_notes.layoutManager = LinearLayoutManager(this)
+        adapter = NotesRVAdapter()
+        rv_notes.adapter = adapter
 
-        btn.setOnClickListener {
-            viewModel.generateNewNumber()
-        }
+        viewModel.viewState().observe(this, Observer {
+            it?.let {
+                adapter.notes = it.notes
+            }
+        })
     }
 }
