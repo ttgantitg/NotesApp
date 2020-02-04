@@ -1,15 +1,18 @@
-package com.ttgantitg.trykotlin
+package com.ttgantitg.trykotlin.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ttgantitg.trykotlin.ui.note.NotesRVAdapter
+import com.ttgantitg.trykotlin.R
+import com.ttgantitg.trykotlin.ui.note.NoteActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
     lateinit var adapter: NotesRVAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,13 +23,18 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         rv_notes.layoutManager = LinearLayoutManager(this)
-        adapter = NotesRVAdapter()
+
+        adapter = NotesRVAdapter {
+            NoteActivity.start(this, it)
+        }
         rv_notes.adapter = adapter
 
         viewModel.viewState().observe(this, Observer {
-            it?.let {
-                adapter.notes = it.notes
-            }
+            it?.let { adapter.notes = it.notes }
         })
+
+        fab.setOnClickListener{
+            NoteActivity.start(this)
+        }
     }
 }

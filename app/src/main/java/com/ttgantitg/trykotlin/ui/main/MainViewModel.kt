@@ -1,4 +1,4 @@
-package com.ttgantitg.trykotlin
+package com.ttgantitg.trykotlin.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +10,10 @@ class MainViewModel: ViewModel() {
     private val viewStateLiveData: MutableLiveData<MainViewState> = MutableLiveData()
 
     init {
-        viewStateLiveData.value = MainViewState(NotesRepository.getNotes())
+        NotesRepository.getNotes().observeForever{
+            viewStateLiveData.value = viewStateLiveData.value?.copy(notes = it) ?: MainViewState(it)
+        }
+
     }
 
     fun viewState(): LiveData<MainViewState> = viewStateLiveData
