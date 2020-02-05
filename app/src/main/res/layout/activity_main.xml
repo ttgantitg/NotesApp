@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity"
-    android:background="@color/colorBackground"
+    android:background="?attr/backgroundColor"
     android:elevation="0dp">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,12 +16,12 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            app:titleTextColor="@color/colorPrimaryText"
+            app:titleTextColor="@color/colorPrimaryTextDark"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="Заметки"/>
+            app:title="@string/notes"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,6 +41,6 @@
         android:layout_marginBottom="16dp"
         app:layout_anchorGravity="bottom|end"
         app:layout_anchor="@id/rv_notes"
-        android:src="@drawable/ic_add_note_black"/>
+        android:src="@drawable/ic_add_note_white"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

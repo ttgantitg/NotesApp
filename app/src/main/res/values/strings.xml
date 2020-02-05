@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">TryKotlin</string>
+    <string name="app_name">Notes</string>
     <string name="new_note_title">Новая заметка</string>
+    <string name="notes">Заметки</string>
+    <string name="new_note">Новая заметка</string>
+    <string name="header">Заголовок</string>
+    <string name="note_text">Текст заметки</string>
 </resources>
