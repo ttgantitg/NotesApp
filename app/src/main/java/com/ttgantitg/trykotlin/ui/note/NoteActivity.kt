@@ -8,7 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.ttgantitg.trykotlin.R
 import com.ttgantitg.trykotlin.data.entity.Note
@@ -45,6 +45,11 @@ class NoteActivity: AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            setTheme(R.style.AppDarkTheme)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note)
 
@@ -65,18 +70,6 @@ class NoteActivity: AppCompatActivity() {
         note?.let {
             et_title.setText(it.title)
             et_body.setText(it.text)
-
-            val color = when(it.color) {
-                Note.Color.PURPLE -> R.color.purple
-                Note.Color.YELLOW -> R.color.yellow
-                Note.Color.GREEN -> R.color.green
-                Note.Color.BLUE -> R.color.blue
-                Note.Color.RED -> R.color.red
-                Note.Color.TEAL -> R.color.teal
-                Note.Color.PINK -> R.color.pink
-            }
-
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, color))
         }
 
         et_title.addTextChangedListener(textChangeListener)

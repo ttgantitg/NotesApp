@@ -1,13 +1,47 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppDarkTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkTheme</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundColor">@color/colorBackgroundDark</item>
+        <item name="cardColor">@color/colorCardDark</item>
+        <item name="textColorPrimary">@color/colorPrimaryTextDark</item>
+        <item name="textColor">@color/colorPrimaryTextDark</item>
+        <item name="textColorSecondary">@color/colorSecondaryTextDark</item>
+        <item name="hintColor">@color/colorHintTextDark</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+    </style>
+
+    <style name="AppLightTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryLight</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryLightTheme</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundColor">@color/colorBackgroundLight</item>
+        <item name="cardColor">@color/colorCardLight</item>
+        <item name="textColorPrimary">@color/colorPrimaryTextLight</item>
+        <item name="textColorSecondary">@color/colorSecondaryTextLight</item>
+        <item name="textColor">@color/colorMenu</item>
+        <item name="hintColor">@color/colorHintTextLight</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+    </style>
+
+    <style name="Switch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorSwitchThumbNormal">@color/colorCardLight</item>
+        <item name="android:colorForeground">@color/colorSecondaryTextDark</item>
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
 </resources>

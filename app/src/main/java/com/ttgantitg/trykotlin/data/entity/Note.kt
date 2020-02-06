@@ -9,23 +9,8 @@ data class Note (
     val id: String,
     val title: String = "",
     val text: String = "",
-    val color: Color = generateColor(),
     val lastChanged: Date = Date()
 ): Parcelable {
-    companion object{
-        private fun generateColor(): Color {
-            return when((Math.random() * 7).toInt()) {
-                0 -> Color.PURPLE
-                1 -> Color.YELLOW
-                2 -> Color.GREEN
-                3 -> Color.BLUE
-                4 -> Color.RED
-                5 -> Color.TEAL
-                6 -> Color.PINK
-                else -> Color.GREEN
-            }
-        }
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -37,13 +22,11 @@ data class Note (
         return true
     }
 
-    enum class Color{
-        PURPLE,
-        YELLOW,
-        GREEN,
-        BLUE,
-        RED,
-        TEAL,
-        PINK
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + text.hashCode()
+        result = 31 * result + lastChanged.hashCode()
+        return result
     }
 }
