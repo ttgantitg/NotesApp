@@ -5,4 +5,8 @@
     <string name="new_note">Новая заметка</string>
     <string name="header">Заголовок</string>
     <string name="note_text">Текст заметки</string>
+    <string name="no_notes">
+        Заметок нет. \n
+        Нажмите кнопку, чтобы создать заметку.
+    </string>
 </resources>

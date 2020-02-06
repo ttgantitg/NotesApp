@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class NotesRVAdapter(val onItemViewClick : ((note: Note) -> Unit)? = null) :
-    RecyclerView.Adapter<NotesRVAdapter.ViewHolder>() {
+    RecyclerView.Adapter<NotesRVAdapter.ViewHolder> () {
 
     var notes: List<Note> = listOf()
         set(value) {

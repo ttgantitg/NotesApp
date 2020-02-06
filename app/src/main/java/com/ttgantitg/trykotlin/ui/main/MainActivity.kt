@@ -3,6 +3,7 @@ package com.ttgantitg.trykotlin.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
@@ -21,16 +22,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        //check theme
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             setTheme(R.style.AppDarkTheme)
         }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         setSupportActionBar(toolbar)
-
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
         rv_notes.layoutManager = LinearLayoutManager(this)
 
         adapter = NotesRVAdapter {
@@ -39,7 +40,18 @@ class MainActivity : AppCompatActivity() {
         rv_notes.adapter = adapter
 
         viewModel.viewState().observe(this, Observer {
-            it?.let { adapter.notes = it.notes }
+            it?.let {
+                adapter.notes = it.notes
+
+                if (adapter.notes.isEmpty()) {
+                    rv_notes.visibility = View.GONE
+                    empty_view.visibility = View.VISIBLE
+
+                } else {
+                    rv_notes.visibility = View.VISIBLE
+                    empty_view.visibility = View.GONE
+                }
+            }
         })
 
         fab.setOnClickListener{
