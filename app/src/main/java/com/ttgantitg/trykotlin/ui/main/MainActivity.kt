@@ -4,20 +4,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ttgantitg.trykotlin.ui.note.NotesRVAdapter
 import com.ttgantitg.trykotlin.R
+import com.ttgantitg.trykotlin.data.entity.Note
+import com.ttgantitg.trykotlin.ui.base.BaseActivity
 import com.ttgantitg.trykotlin.ui.note.NoteActivity
+import com.ttgantitg.trykotlin.ui.note.NotesRVAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
 
-    private lateinit var viewModel: MainViewModel
+    override val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
+
+    override val layoutRes = R.layout.activity_main
     private lateinit var adapter: NotesRVAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,30 +33,14 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setSupportActionBar(toolbar)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         rv_notes.layoutManager = LinearLayoutManager(this)
 
         adapter = NotesRVAdapter {
-            NoteActivity.start(this, it)
+            NoteActivity.start(this, it.id)
         }
         rv_notes.adapter = adapter
-
-        viewModel.viewState().observe(this, Observer {
-            it?.let {
-                adapter.notes = it.notes
-
-                if (adapter.notes.isEmpty()) {
-                    rv_notes.visibility = View.GONE
-                    empty_view.visibility = View.VISIBLE
-
-                } else {
-                    rv_notes.visibility = View.VISIBLE
-                    empty_view.visibility = View.GONE
-                }
-            }
-        })
 
         fab.setOnClickListener{
             NoteActivity.start(this)
@@ -81,6 +69,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+
+    override fun renderData(data: List<Note>?) {
+        data?.let {
+            adapter.notes = it
+
+            if (adapter.notes.isEmpty()) {
+                rv_notes.visibility = View.GONE
+                empty_view.visibility = View.VISIBLE
+
+            } else {
+                rv_notes.visibility = View.VISIBLE
+                empty_view.visibility = View.GONE
+            }
+        }
     }
 
     private fun restartApp() {
