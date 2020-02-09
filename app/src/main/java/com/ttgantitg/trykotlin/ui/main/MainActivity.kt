@@ -1,11 +1,11 @@
 package com.ttgantitg.trykotlin.ui.main
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ttgantitg.trykotlin.R
@@ -17,6 +17,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
 
+    val APP_PREFERENCES = "appsettings"
+    val APP_PREFERENCES_THEME = "theme"
+    private lateinit var pref: SharedPreferences
+
     override val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
@@ -27,8 +31,10 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //check theme
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            setTheme(R.style.AppDarkTheme)
+        pref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
+        when (pref.getInt(APP_PREFERENCES_THEME, 0)) {
+            0 -> setTheme(R.style.AppLightTheme)
+            1 -> setTheme(R.style.AppDarkTheme)
         }
 
         super.onCreate(savedInstanceState)
@@ -49,26 +55,32 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        val item = menu!!.findItem(R.id.switch_item)
-        item!!.setActionView(R.layout.switch_layout)
+        return true
+    }
 
-        val mSwitch = item.actionView.findViewById<SwitchCompat>(R.id.theme_switch)
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            mSwitch.isChecked = true
-        }
-        mSwitch.setOnCheckedChangeListener { _, isChecked ->
-            when (isChecked) {
-                true -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    restartApp()
-                }
-                false -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    restartApp()
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       return when (item.itemId) {
+            R.id.theme_item -> {
+                setPrefTheme(item.title as String)
+                restartApp()
+                true
+            }
+           else -> super.onOptionsItemSelected(item)
+       }
+    }
+
+    private fun setPrefTheme(themeId: String) {
+        val editor = pref.edit()
+        when (themeId) {
+            "Светлая тема" -> {
+                editor.putInt(APP_PREFERENCES_THEME, 0)
+                editor.apply()
+            }
+            "Темная тема" -> {
+                editor.putInt(APP_PREFERENCES_THEME, 1)
+                editor.apply()
             }
         }
-        return true
     }
 
     override fun renderData(data: List<Note>?) {

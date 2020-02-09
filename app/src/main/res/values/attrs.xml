@@ -7,5 +7,6 @@
         <attr name="textColorSecondary" format="color"/>
         <attr name="hintColor" format="color"/>
         <attr name="textColor" format="color"/>
+        <attr name="select_theme" format="string|reference"/>
     </declare-styleable>
 </resources>

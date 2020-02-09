@@ -31,8 +31,6 @@ class MainViewModel : BaseViewModel<List<Note>?, MainViewState>() {
         repositoryNotes.observeForever(notesObserver)
     }
 
-    fun viewState(): LiveData<MainViewState> = viewStateLiveData
-
     override fun onCleared() {
         repositoryNotes.removeObserver(notesObserver)
         super.onCleared()

@@ -15,6 +15,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="select_theme">@string/dark_title</item>
     </style>
 
     <style name="AppLightTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
@@ -31,12 +32,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-    </style>
-
-    <style name="Switch" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="colorSwitchThumbNormal">@color/colorCardLight</item>
-        <item name="android:colorForeground">@color/colorSecondaryTextDark</item>
+        <item name="select_theme">@string/light_title</item>
     </style>
 
     <style name="WindowAnimationTransition">
