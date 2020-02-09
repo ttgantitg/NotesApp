@@ -9,4 +9,6 @@
         Заметок нет. \n
         Нажмите кнопку, чтобы создать заметку.
     </string>
+    <string name="dark_title">Светлая тема</string>
+    <string name="light_title">Темная тема</string>
 </resources>

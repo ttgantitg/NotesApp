@@ -1,58 +1,52 @@
 package com.ttgantitg.trykotlin.ui.main
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ttgantitg.trykotlin.ui.note.NotesRVAdapter
 import com.ttgantitg.trykotlin.R
+import com.ttgantitg.trykotlin.data.entity.Note
+import com.ttgantitg.trykotlin.ui.base.BaseActivity
 import com.ttgantitg.trykotlin.ui.note.NoteActivity
+import com.ttgantitg.trykotlin.ui.note.NotesRVAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
 
-    private lateinit var viewModel: MainViewModel
+    val APP_PREFERENCES = "appsettings"
+    val APP_PREFERENCES_THEME = "theme"
+    private lateinit var pref: SharedPreferences
+
+    override val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
+
+    override val layoutRes = R.layout.activity_main
     private lateinit var adapter: NotesRVAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //check theme
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            setTheme(R.style.AppDarkTheme)
+        pref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
+        when (pref.getInt(APP_PREFERENCES_THEME, 0)) {
+            0 -> setTheme(R.style.AppLightTheme)
+            1 -> setTheme(R.style.AppDarkTheme)
         }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setSupportActionBar(toolbar)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         rv_notes.layoutManager = LinearLayoutManager(this)
 
         adapter = NotesRVAdapter {
-            NoteActivity.start(this, it)
+            NoteActivity.start(this, it.id)
         }
         rv_notes.adapter = adapter
-
-        viewModel.viewState().observe(this, Observer {
-            it?.let {
-                adapter.notes = it.notes
-
-                if (adapter.notes.isEmpty()) {
-                    rv_notes.visibility = View.GONE
-                    empty_view.visibility = View.VISIBLE
-
-                } else {
-                    rv_notes.visibility = View.VISIBLE
-                    empty_view.visibility = View.GONE
-                }
-            }
-        })
 
         fab.setOnClickListener{
             NoteActivity.start(this)
@@ -61,26 +55,47 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        val item = menu!!.findItem(R.id.switch_item)
-        item!!.setActionView(R.layout.switch_layout)
+        return true
+    }
 
-        val mSwitch = item.actionView.findViewById<SwitchCompat>(R.id.theme_switch)
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            mSwitch.isChecked = true
-        }
-        mSwitch.setOnCheckedChangeListener { _, isChecked ->
-            when (isChecked) {
-                true -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    restartApp()
-                }
-                false -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    restartApp()
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       return when (item.itemId) {
+            R.id.theme_item -> {
+                setPrefTheme(item.title as String)
+                restartApp()
+                true
+            }
+           else -> super.onOptionsItemSelected(item)
+       }
+    }
+
+    private fun setPrefTheme(themeId: String) {
+        val editor = pref.edit()
+        when (themeId) {
+            "Светлая тема" -> {
+                editor.putInt(APP_PREFERENCES_THEME, 0)
+                editor.apply()
+            }
+            "Темная тема" -> {
+                editor.putInt(APP_PREFERENCES_THEME, 1)
+                editor.apply()
             }
         }
-        return true
+    }
+
+    override fun renderData(data: List<Note>?) {
+        data?.let {
+            adapter.notes = it
+
+            if (adapter.notes.isEmpty()) {
+                rv_notes.visibility = View.GONE
+                empty_view.visibility = View.VISIBLE
+
+            } else {
+                rv_notes.visibility = View.VISIBLE
+                empty_view.visibility = View.GONE
+            }
+        }
     }
 
     private fun restartApp() {

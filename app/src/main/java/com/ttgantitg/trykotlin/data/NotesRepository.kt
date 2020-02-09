@@ -1,34 +1,14 @@
 package com.ttgantitg.trykotlin.data
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.ttgantitg.trykotlin.data.entity.Note
+import com.ttgantitg.trykotlin.data.provider.FireStoreProvider
+import com.ttgantitg.trykotlin.data.provider.RemoteDataProvider
 
 object NotesRepository {
 
-    private val notesLiveData = MutableLiveData<List<Note>>()
-    private val notes: MutableList<Note> = mutableListOf()
+    private val remoteProvider: RemoteDataProvider = FireStoreProvider()
 
-    init {
-        notesLiveData.value = notes
-    }
-
-    fun saveNote(note: Note) {
-        addOrReplace(note)
-        notesLiveData.value = notes
-    }
-
-    private fun addOrReplace(note: Note) {
-        for (i in notes.indices) {
-            if (notes[i] == note) {
-                notes[i] = note
-                return
-            }
-        }
-        notes.add(note)
-    }
-
-    fun getNotes(): LiveData<List<Note>> {
-        return notesLiveData
-    }
+    fun getNotes() = remoteProvider.subscribeToAllNotes()
+    fun saveNote(note: Note) = remoteProvider.saveNote(note)
+    fun getNoteById(id: String) = remoteProvider.getNoteById(id)
 }
