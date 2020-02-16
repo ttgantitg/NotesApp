@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "677430441593-hj5i61pnnfql6fj8qf3v2ge53fncndmn.apps.googleusercontent.com",
+          "client_id": "677430441593-g4488jomc6a715ngcc9t741hj0uubmcd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ttgantitg.trykotlin",
-            "certificate_hash": "a388ab22aa3900ecc8fb023bb8c4b8a9a78bcf00"
+            "certificate_hash": "c62791861e02e93271e669bdf0a7eb6196fe8bee"
           }
         },
         {
