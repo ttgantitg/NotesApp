@@ -1,64 +1,78 @@
 package com.ttgantitg.trykotlin.data.provider
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.ttgantitg.trykotlin.data.entity.Note
+import com.ttgantitg.trykotlin.data.entity.User
+import com.ttgantitg.trykotlin.data.errors.NoAuthException
 import com.ttgantitg.trykotlin.data.model.NoteResult
 
 class FireStoreProvider : RemoteDataProvider {
 
     companion object {
         private const val NOTES_COLLECTION = "notes"
+        private const val USERS_COLLECTION = "users"
     }
 
-    private val store = FirebaseFirestore.getInstance()
-    private val noteReference = store.collection(NOTES_COLLECTION)
+    private val store by lazy { FirebaseFirestore.getInstance() }
 
-    override fun subscribeToAllNotes(): LiveData<NoteResult> {
-        val result = MutableLiveData<NoteResult>()
-        noteReference.addSnapshotListener { snapshot, e ->
-            e?.let {
-                result.value = NoteResult.Error(e)
-            } ?: let {
-                snapshot?.let { snapshot ->
-                    val notes = mutableListOf<Note>()
-                    for (doc : QueryDocumentSnapshot in snapshot) {
-                        notes.add(doc.toObject(Note::class.java))
+    private val currentUser
+        get() = FirebaseAuth.getInstance().currentUser
+
+    private val userNotesCollection: CollectionReference
+        get() = currentUser?.let {
+                store.collection(USERS_COLLECTION).document(it.uid).collection(NOTES_COLLECTION)
+            } ?: throw NoAuthException()
+
+    override fun getCurrentUser() = MutableLiveData<User?>().apply {
+        value = currentUser?.let {
+            User(it.displayName ?: "", it.email ?: "")
+        }
+    }
+
+    override fun subscribeToAllNotes() = MutableLiveData<NoteResult>().apply {
+        try {
+            userNotesCollection.addSnapshotListener { snapshot, e ->
+                e?.let {
+                    throw it
+                } ?: let {
+                    snapshot?.let { snapshot ->
+                        value = NoteResult.Success(snapshot.map { it.toObject(Note::class.java) })
                     }
-                    result.value = NoteResult.Success(notes)
                 }
             }
+        } catch (e: Throwable) {
+            value = NoteResult.Error(e)
         }
-        return result
     }
 
-    override fun getNoteById(id: String): LiveData<NoteResult> {
-        val result = MutableLiveData<NoteResult>()
-        noteReference.document(id).get()
-            .addOnSuccessListener { snapshot ->
-                result.value = NoteResult.Success(snapshot.toObject(Note::class.java))
-            }
-            .addOnFailureListener {
-                result.value = NoteResult.Error(it)
-            }
-
-        return result
+    override fun getNoteById(id: String) = MutableLiveData<NoteResult>().apply {
+        try {
+            userNotesCollection.document(id).get()
+                .addOnSuccessListener { snapshot ->
+                    value = NoteResult.Success(snapshot.toObject(Note::class.java))
+                }
+                .addOnFailureListener {
+                    throw it
+                }
+        } catch (e: Throwable) {
+            value = NoteResult.Error(e)
+        }
     }
 
-    override fun saveNote(note: Note): LiveData<NoteResult> {
-        val result = MutableLiveData<NoteResult>()
-        noteReference.document(note.id).set(note)
-            .addOnSuccessListener {
-                result.value = NoteResult.Success(note)
-            }
-            .addOnFailureListener {
-                result.value = NoteResult.Error(it)
-            }
-
-        return result
+    override fun saveNote(note: Note)= MutableLiveData<NoteResult>().apply {
+        try {
+            userNotesCollection.document(note.id).set(note)
+                .addOnSuccessListener {
+                    value = NoteResult.Success(note)
+                }
+                .addOnFailureListener {
+                    throw it
+                }
+        } catch (e: Throwable) {
+            value = NoteResult.Error(e)
+        }
     }
-
-
 }

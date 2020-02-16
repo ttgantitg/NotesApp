@@ -1,21 +1,31 @@
 package com.ttgantitg.trykotlin.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.auth.AuthUI
 import com.ttgantitg.trykotlin.R
 import com.ttgantitg.trykotlin.data.entity.Note
 import com.ttgantitg.trykotlin.ui.base.BaseActivity
 import com.ttgantitg.trykotlin.ui.note.NoteActivity
 import com.ttgantitg.trykotlin.ui.note.NotesRVAdapter
+import com.ttgantitg.trykotlin.ui.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
+class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.LogoutListener {
+
+    companion object {
+        fun start(context: Context) = Intent(context, MainActivity::class.java).apply {
+            context.startActivity(this)
+        }
+    }
 
     val APP_PREFERENCES = "appsettings"
     val APP_PREFERENCES_THEME = "theme"
@@ -51,22 +61,42 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
         fab.setOnClickListener{
             NoteActivity.start(this)
         }
+
+        listOf<String>().forEach {
+            if(it.isEmpty()){
+                return@forEach
+            }
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
+    override fun onCreateOptionsMenu(menu: Menu?) =
+        MenuInflater(this).inflate(R.menu.menu_main, menu).let { true }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
        return when (item.itemId) {
-            R.id.theme_item -> {
-                setPrefTheme(item.title as String)
-                restartApp()
-                true
-            }
-           else -> super.onOptionsItemSelected(item)
+           R.id.theme_item -> {
+            setPrefTheme(item.title as String)
+            restartApp()
+            true
+           }
+           R.id.logout_item -> showLogoutDialog().let { true }
+           else -> false
        }
+    }
+
+    private fun showLogoutDialog() {
+        supportFragmentManager.findFragmentByTag(LogoutDialog.TAG) ?:
+            LogoutDialog.createInstance().show(supportFragmentManager, LogoutDialog.TAG)
+    }
+
+    override fun onLogout() {
+        AuthUI.getInstance()
+            .signOut(this)
+            .addOnCompleteListener {
+                startActivity(Intent(this, SplashActivity::class.java))
+                finish()
+            }
     }
 
     private fun setPrefTheme(themeId: String) {
