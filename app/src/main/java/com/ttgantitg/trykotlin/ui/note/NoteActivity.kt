@@ -7,8 +7,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatDelegate
 import com.ttgantitg.trykotlin.R
+import com.ttgantitg.trykotlin.common.getColorInt
 import com.ttgantitg.trykotlin.data.entity.Note
 import com.ttgantitg.trykotlin.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.toolbar
@@ -33,6 +33,7 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
     override val layoutRes = R.layout.activity_note
     override val model: NoteViewModel by viewModel()
     private var note: Note? = null
+    var color = Note.Color.WHITE
 
     private val textChangeListener = object : TextWatcher{
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
@@ -43,11 +44,6 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            setTheme(R.style.AppDarkTheme)
-        }
-
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -73,12 +69,21 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
             removeEditListener()
             et_title.setText(it.title)
             et_body.setText(it.text)
-            supportActionBar?.title = SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(note!!.lastChanged)
+            if
+            toolbar.setBackgroundColor(it.color.getColorInt(this))
+            supportActionBar?.title = SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(it.lastChanged)
         } ?: let {
             supportActionBar?.title = getString(R.string.new_note_title)
         }
+
         setEditListener()
-//        saveNote()
+
+        colorPicker.onColorClickListener = {
+            toolbar.setBackgroundColor(color.getColorInt(this))
+            color = it
+        }
+
+        saveNote()
     }
 
     fun saveNote() {
@@ -88,11 +93,13 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
         note = note?.copy(
             title = et_title.text.toString(),
             text = et_body.text.toString(),
-            lastChanged = Date()
+            lastChanged = Date(),
+            color = color
         ) ?: Note (
             UUID.randomUUID().toString(),
             et_title.text.toString(),
-            et_body.text.toString()
+            et_body.text.toString(),
+            color
         )
 
         note?.let { model.save(it) }
@@ -103,8 +110,17 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> onBackPressed().let { true }
+        R.id.palette -> togglePalette().let { true }
         R.id.delete_item -> deleteNote().let { true }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun togglePalette() {
+        if (colorPicker.isOpen) {
+            colorPicker.close()
+        } else {
+            colorPicker.open()
+        }
     }
 
     private fun deleteNote() {
@@ -115,12 +131,12 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
         }.show()
     }
 
-    private fun removeEditListener() {
+    private fun removeEditListener(){
         et_title.removeTextChangedListener(textChangeListener)
         et_body.removeTextChangedListener(textChangeListener)
     }
 
-    private fun setEditListener() {
+    private fun setEditListener(){
         et_title.removeTextChangedListener(textChangeListener)
         et_body.removeTextChangedListener(textChangeListener)
     }

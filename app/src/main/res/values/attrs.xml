@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ds">
-        <attr name="backgroundColor" format="color"/>
-        <attr name="cardColor" format="color"/>
-        <attr name="textColorPrimary" format="color"/>
-        <attr name="textColorSecondary" format="color"/>
-        <attr name="hintColor" format="color"/>
-        <attr name="textColor" format="color"/>
-        <attr name="select_theme" format="string|reference"/>
+    <declare-styleable name="ColorCircleView">
+        <attr name="fillColor" format="color|reference"/>
+        <attr name="strokeColor" format="color|reference"/>
+        <attr name="circleRadius" format="dimension"/>
+        <attr name="strokeWidth" format="dimension"/>
     </declare-styleable>
 </resources>

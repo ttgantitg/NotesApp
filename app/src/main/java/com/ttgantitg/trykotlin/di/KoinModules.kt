@@ -1,4 +1,4 @@
-package com.ttgantitg.trykotlin.data.di
+package com.ttgantitg.trykotlin.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

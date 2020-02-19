@@ -17,4 +17,5 @@
     <string name="logout_dialog_no">Нет</string>
     <string name="delete_note">Удалить заметку</string>
     <string name="note_delete_message">Удалить заметку?</string>
+    <string name="change_color_note">Изменить цвет</string>
 </resources>

@@ -3,7 +3,6 @@
     android:id="@+id/cv_note"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,8 +10,7 @@
     android:layout_marginEnd="8dp"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
-    android:elevation="1dp"
-    app:cardBackgroundColor="?attr/cardColor">
+    android:elevation="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,8 +29,7 @@
                 android:layout_margin="8dp"
                 tools:text="заметка"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="?attr/textColorPrimary"/>
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_date"
@@ -42,8 +39,7 @@
                 tools:text="заметка"
                 android:layout_alignParentEnd="true"
                 android:textSize="16sp"
-                android:textColor="?attr/textColorSecondary"
-                tools:ignore="RelativeOverlap" />
+                tools:ignore="RelativeOverlap"/>
         </RelativeLayout>
 
         <TextView
@@ -52,8 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             tools:text="текст заметки"
-            android:textSize="18sp"
-            android:textColor="?attr/textColorSecondary"/>
+            android:textSize="18sp"/>
 
     </LinearLayout>
 
