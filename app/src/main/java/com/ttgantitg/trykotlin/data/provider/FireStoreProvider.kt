@@ -1,5 +1,6 @@
 package com.ttgantitg.trykotlin.data.provider
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -9,21 +10,19 @@ import com.ttgantitg.trykotlin.data.entity.User
 import com.ttgantitg.trykotlin.data.errors.NoAuthException
 import com.ttgantitg.trykotlin.data.model.NoteResult
 
-class FireStoreProvider : RemoteDataProvider {
+class FireStoreProvider(private val firebaseAuth: FirebaseAuth, private val firestore: FirebaseFirestore) : RemoteDataProvider {
 
     companion object {
         private const val NOTES_COLLECTION = "notes"
         private const val USERS_COLLECTION = "users"
     }
 
-    private val store by lazy { FirebaseFirestore.getInstance() }
-
     private val currentUser
-        get() = FirebaseAuth.getInstance().currentUser
+        get() = firebaseAuth.currentUser
 
     private val userNotesCollection: CollectionReference
         get() = currentUser?.let {
-                store.collection(USERS_COLLECTION).document(it.uid).collection(NOTES_COLLECTION)
+                firestore.collection(USERS_COLLECTION).document(it.uid).collection(NOTES_COLLECTION)
             } ?: throw NoAuthException()
 
     override fun getCurrentUser() = MutableLiveData<User?>().apply {
@@ -67,6 +66,20 @@ class FireStoreProvider : RemoteDataProvider {
             userNotesCollection.document(note.id).set(note)
                 .addOnSuccessListener {
                     value = NoteResult.Success(note)
+                }
+                .addOnFailureListener {
+                    throw it
+                }
+        } catch (e: Throwable) {
+            value = NoteResult.Error(e)
+        }
+    }
+
+    override fun deleteNote(noteId: String): LiveData<NoteResult> = MutableLiveData<NoteResult>().apply {
+        try {
+            userNotesCollection.document(noteId).delete()
+                .addOnSuccessListener {
+                    value = NoteResult.Success(null)
                 }
                 .addOnFailureListener {
                     throw it

@@ -5,10 +5,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.auth.AuthUI
 import com.ttgantitg.trykotlin.R
@@ -18,8 +17,10 @@ import com.ttgantitg.trykotlin.ui.note.NoteActivity
 import com.ttgantitg.trykotlin.ui.note.NotesRVAdapter
 import com.ttgantitg.trykotlin.ui.splash.SplashActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.alert
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.LogoutListener {
+class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
 
     companion object {
         fun start(context: Context) = Intent(context, MainActivity::class.java).apply {
@@ -31,9 +32,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
     val APP_PREFERENCES_THEME = "theme"
     private lateinit var pref: SharedPreferences
 
-    override val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
-    }
+    override val model: MainViewModel by viewModel()
 
     override val layoutRes = R.layout.activity_main
     private lateinit var adapter: NotesRVAdapter
@@ -48,7 +47,6 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
         }
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         rv_notes.layoutManager = LinearLayoutManager(this)
@@ -61,16 +59,10 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
         fab.setOnClickListener{
             NoteActivity.start(this)
         }
-
-        listOf<String>().forEach {
-            if(it.isEmpty()){
-                return@forEach
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?) =
-        MenuInflater(this).inflate(R.menu.menu_main, menu).let { true }
+        menuInflater.inflate(R.menu.menu_main, menu).let { true }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -86,11 +78,15 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
     }
 
     private fun showLogoutDialog() {
-        supportFragmentManager.findFragmentByTag(LogoutDialog.TAG) ?:
-            LogoutDialog.createInstance().show(supportFragmentManager, LogoutDialog.TAG)
+        alert {
+            titleResource = R.string.log_out
+            messageResource = R.string.logout_dialog_message
+            positiveButton(R.string.logout_dialog_yes) { onLogout() }
+            neutralPressed(R.string.logout_dialog_no) { dialog -> dialog.dismiss() }
+        }.show()
     }
 
-    override fun onLogout() {
+    private fun onLogout() {
         AuthUI.getInstance()
             .signOut(this)
             .addOnCompleteListener {
@@ -109,6 +105,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
             "Темная тема" -> {
                 editor.putInt(APP_PREFERENCES_THEME, 1)
                 editor.apply()
+                AppCompatDelegate.MODE_NIGHT_YES
             }
         }
     }

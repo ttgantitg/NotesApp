@@ -1,13 +1,12 @@
 package com.ttgantitg.trykotlin.ui.main
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.ttgantitg.trykotlin.data.NotesRepository
 import com.ttgantitg.trykotlin.data.entity.Note
 import com.ttgantitg.trykotlin.data.model.NoteResult
 import com.ttgantitg.trykotlin.ui.base.BaseViewModel
 
-class MainViewModel : BaseViewModel<List<Note>?, MainViewState>() {
+class MainViewModel(notesRepository: NotesRepository) : BaseViewModel<List<Note>?, MainViewState>() {
 
     private val notesObserver = object : Observer<NoteResult> {
         override fun onChanged(t: NoteResult?) {
@@ -24,7 +23,7 @@ class MainViewModel : BaseViewModel<List<Note>?, MainViewState>() {
         }
     }
 
-    private val repositoryNotes = NotesRepository.getNotes()
+    private val repositoryNotes = notesRepository.getNotes()
 
     init {
         viewStateLiveData.value = MainViewState()

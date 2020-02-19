@@ -5,18 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.ViewModelProvider
 import com.ttgantitg.trykotlin.R
 import com.ttgantitg.trykotlin.data.entity.Note
 import com.ttgantitg.trykotlin.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_note.*
+import org.jetbrains.anko.alert
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NoteActivity: BaseActivity<Note?, NoteViewState>() {
+class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
     companion object{
         private val EXTRA_NOTE = NoteActivity::class.java.name + "extra.NOTE"
         const val DATE_TIME_FORMAT = "dd.MM.yy HH:mm"
@@ -29,7 +31,7 @@ class NoteActivity: BaseActivity<Note?, NoteViewState>() {
     }
 
     override val layoutRes = R.layout.activity_note
-    override val viewModel: NoteViewModel by lazy { ViewModelProvider(this).get(NoteViewModel::class.java) }
+    override val model: NoteViewModel by viewModel()
     private var note: Note? = null
 
     private val textChangeListener = object : TextWatcher{
@@ -53,29 +55,30 @@ class NoteActivity: BaseActivity<Note?, NoteViewState>() {
         val noteId = intent.getStringExtra(EXTRA_NOTE)
 
         noteId?.let {
-            viewModel.loadNote(it)
+            model.loadNote(it)
         } ?: let {
             supportActionBar?.title = getString(R.string.new_note_title)
+            initView()
         }
     }
 
-    override fun renderData(data: Note?) {
-        this.note = data
-        supportActionBar?.title = this.note?.let {
-            SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(note!!.lastChanged)
-        } ?: getString(R.string.new_note_title)
-
+    override fun renderData(data: NoteViewState.Data) {
+        if (data.isDeleted) finish()
+        this.note = data.note
         initView()
     }
 
     private fun initView() {
         note?.let {
+            removeEditListener()
             et_title.setText(it.title)
             et_body.setText(it.text)
+            supportActionBar?.title = SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(note!!.lastChanged)
+        } ?: let {
+            supportActionBar?.title = getString(R.string.new_note_title)
         }
-
-        et_title.addTextChangedListener(textChangeListener)
-        et_body.addTextChangedListener(textChangeListener)
+        setEditListener()
+//        saveNote()
     }
 
     fun saveNote() {
@@ -92,14 +95,33 @@ class NoteActivity: BaseActivity<Note?, NoteViewState>() {
             et_body.text.toString()
         )
 
-        note?.let { viewModel.save(it) }
+        note?.let { model.save(it) }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?) =
+        menuInflater.inflate(R.menu.menu_note, menu).let { true }
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
-            onBackPressed()
-            true
-        }
+        android.R.id.home -> onBackPressed().let { true }
+        R.id.delete_item -> deleteNote().let { true }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteNote() {
+        alert {
+            messageResource = R.string.note_delete_message
+            neutralPressed(R.string.logout_dialog_no) { dialog -> dialog.dismiss() }
+            positiveButton(R.string.logout_dialog_yes) { model.deleteNote() }
+        }.show()
+    }
+
+    private fun removeEditListener() {
+        et_title.removeTextChangedListener(textChangeListener)
+        et_body.removeTextChangedListener(textChangeListener)
+    }
+
+    private fun setEditListener() {
+        et_title.removeTextChangedListener(textChangeListener)
+        et_body.removeTextChangedListener(textChangeListener)
     }
 }

@@ -13,7 +13,7 @@
     //lightTheme
     <color name="colorPrimaryLightTheme">#303F9F</color>
     <color name="colorPrimaryLight">#3F51B5</color>
-    <color name="colorBackgroundLight">#C5CAE9</color>
+    <color name="colorBackgroundLight">#FFFFFF</color>
     <color name="colorCardLight">#FFFFFF</color>
     <color name="colorPrimaryTextLight">#303F9F</color>
     <color name="colorSecondaryTextLight">#70000000</color>
