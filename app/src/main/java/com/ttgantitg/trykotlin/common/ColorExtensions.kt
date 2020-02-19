@@ -8,8 +8,8 @@ import com.ttgantitg.trykotlin.data.entity.Note
 fun Note.Color.getColorInt(context: Context): Int =
     ContextCompat.getColor(
         context, when (this) {
-            Note.Color.WHITE -> R.color.white
-            Note.Color.VIOLET -> R.color.violet
+            Note.Color.PURPLE -> R.color.purple
+            Note.Color.INDIGO -> R.color.indigo
             Note.Color.YELLOW -> R.color.yellow
             Note.Color.RED -> R.color.red
             Note.Color.PINK -> R.color.pink
@@ -20,8 +20,8 @@ fun Note.Color.getColorInt(context: Context): Int =
 
 
 fun Note.Color.getColorRes(): Int = when (this) {
-    Note.Color.WHITE -> R.color.white
-    Note.Color.VIOLET -> R.color.violet
+    Note.Color.PURPLE -> R.color.purple
+    Note.Color.INDIGO -> R.color.indigo
     Note.Color.YELLOW -> R.color.yellow
     Note.Color.RED -> R.color.red
     Note.Color.PINK -> R.color.pink

@@ -7,7 +7,7 @@
     <string name="note_text">Текст заметки</string>
     <string name="no_notes">
         Заметок нет. \n
-        Нажмите кнопку, чтобы создать заметку.
+        Нажмите \"+\", чтобы создать заметку.
     </string>
     <string name="dark_title">Светлая тема</string>
     <string name="light_title">Темная тема</string>

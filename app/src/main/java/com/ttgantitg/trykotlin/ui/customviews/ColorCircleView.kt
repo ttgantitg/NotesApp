@@ -32,7 +32,7 @@ class ColorCircleView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     @Dimension(unit = PX) var radius: Float = dip(defRadiusDp).toFloat()
 
-    @ColorRes var fillColorRes: Int = R.color.white
+    @ColorRes var fillColorRes: Int = R.color.indigo
         set(value) {
             field = value
             fillPaint.color = ContextCompat.getColor(context, value)
@@ -54,7 +54,7 @@ class ColorCircleView @JvmOverloads constructor(context: Context, attrs: Attribu
         val a = context.obtainStyledAttributes(attrs, R.styleable.ColorCircleView)
         val defRadiusPx = dip(defRadiusDp).toFloat()
         radius = a.getDimension(R.styleable.ColorCircleView_circleRadius, defRadiusPx)
-        fillColorRes = a.getResourceId(R.styleable.ColorCircleView_fillColor, R.color.white)
+        fillColorRes = a.getResourceId(R.styleable.ColorCircleView_fillColor, R.color.indigo)
         val defStrokeWidthPx = dip(defStrokeWidthDp).toFloat()
         strokeWidth = a.getDimension(R.styleable.ColorCircleView_strokeWidth, defStrokeWidthPx)
         strokeColorRes = a.getResourceId(R.styleable.ColorCircleView_strokeColor, R.color.text_secondary)

@@ -51,7 +51,7 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
         startActivityForResult(
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setLogo(R.drawable.android_logo)
+                .setLogo(R.drawable.logo)
                 .setTheme(R.style.LoginStyle)
                 .setAvailableProviders(providers)
                 .build(),

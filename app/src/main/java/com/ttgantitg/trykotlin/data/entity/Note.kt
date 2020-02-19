@@ -9,7 +9,7 @@ data class Note (
     val id: String = "",
     val title: String = "",
     val text: String = "",
-    val color: Color = Color.WHITE,
+    val color: Color = Color.INDIGO,
     val lastChanged: Date = Date()
 ): Parcelable {
 
@@ -32,12 +32,12 @@ data class Note (
     }
 
     enum class Color{
-        WHITE,
+        PURPLE,
         YELLOW,
         GREEN,
         BLUE,
         RED,
-        VIOLET,
+        INDIGO,
         PINK
     }
 }
