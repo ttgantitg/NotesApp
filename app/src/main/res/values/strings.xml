@@ -7,7 +7,7 @@
     <string name="note_text">Текст заметки</string>
     <string name="no_notes">
         Заметок нет. \n
-        Нажмите кнопку, чтобы создать заметку.
+        Нажмите \"+\", чтобы создать заметку.
     </string>
     <string name="dark_title">Светлая тема</string>
     <string name="light_title">Темная тема</string>
@@ -15,4 +15,7 @@
     <string name="logout_dialog_message">Вы уверены?</string>
     <string name="logout_dialog_yes">Да</string>
     <string name="logout_dialog_no">Нет</string>
+    <string name="delete_note">Удалить заметку</string>
+    <string name="note_delete_message">Удалить заметку?</string>
+    <string name="change_color_note">Изменить цвет</string>
 </resources>

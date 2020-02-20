@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity"
-    android:background="?attr/backgroundColor"
     android:elevation="0dp">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,14 +15,10 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            app:titleTextColor="@color/colorPrimaryTextDark"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="@string/notes"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:title="@string/notes" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,7 +36,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
-        android:textColor="?attr/textColor"
         android:text="@string/no_notes" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

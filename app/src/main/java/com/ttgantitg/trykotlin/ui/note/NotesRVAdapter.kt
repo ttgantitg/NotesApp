@@ -3,8 +3,10 @@ package com.ttgantitg.trykotlin.ui.note
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.ttgantitg.trykotlin.R
+import com.ttgantitg.trykotlin.common.getColorInt
 import com.ttgantitg.trykotlin.data.entity.Note
 import kotlinx.android.synthetic.main.item_note.view.*
 import java.text.SimpleDateFormat
@@ -38,6 +40,7 @@ class NotesRVAdapter(val onItemViewClick : ((note: Note) -> Unit)? = null) :
             tv_title.text = note.title
             tv_text.text = note.text
             tv_date.text = SimpleDateFormat(NoteActivity.DATE_TIME_FORMAT, Locale.getDefault()).format(note.lastChanged)
+            (this as CardView).setCardBackgroundColor(note.color.getColorInt(context))
             itemView.setOnClickListener { onItemViewClick?.invoke(note) }
         }
     }

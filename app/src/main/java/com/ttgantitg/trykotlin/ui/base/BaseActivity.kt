@@ -16,13 +16,13 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
         const val RC_SIGN_IN = 1488
     }
 
-    abstract val viewModel: BaseViewModel<T, S>
+    abstract val model: BaseViewModel<T, S>
     abstract val layoutRes: Int?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         layoutRes?.let { setContentView(it) }
-        viewModel.getViewState().observe(this, object : Observer<S> {
+        model.getViewState().observe(this, object : Observer<S> {
             override fun onChanged(t: S?) {
                 t ?: return
                 t.error?.let {
@@ -51,7 +51,7 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
         startActivityForResult(
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setLogo(R.drawable.android_logo)
+                .setLogo(R.drawable.logo)
                 .setTheme(R.style.LoginStyle)
                 .setAvailableProviders(providers)
                 .build(),
@@ -60,6 +60,7 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_OK){
             finish()
         }

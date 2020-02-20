@@ -9,6 +9,7 @@ data class Note (
     val id: String = "",
     val title: String = "",
     val text: String = "",
+    val color: Color = Color.INDIGO,
     val lastChanged: Date = Date()
 ): Parcelable {
 
@@ -28,5 +29,15 @@ data class Note (
         result = 31 * result + text.hashCode()
         result = 31 * result + lastChanged.hashCode()
         return result
+    }
+
+    enum class Color{
+        PURPLE,
+        YELLOW,
+        GREEN,
+        BLUE,
+        RED,
+        INDIGO,
+        PINK
     }
 }

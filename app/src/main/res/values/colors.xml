@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    //darkTheme
-    <color name="colorPrimaryDarkTheme">#000000</color>
-    <color name="colorPrimaryDark">#212121</color>
-    <color name="colorAccent">#F4511E</color>
-    <color name="colorBackgroundDark">#303030</color>
-    <color name="colorCardDark">#424242</color>
-    <color name="colorPrimaryTextDark">#FFFFFF</color>
-    <color name="colorSecondaryTextDark">#70FFFFFF</color>
-    <color name="colorHintTextDark">#50FFFFFF</color>
-    <color name="colorMenu">#000000</color>
-    //lightTheme
-    <color name="colorPrimaryLightTheme">#303F9F</color>
-    <color name="colorPrimaryLight">#3F51B5</color>
-    <color name="colorBackgroundLight">#C5CAE9</color>
-    <color name="colorCardLight">#FFFFFF</color>
-    <color name="colorPrimaryTextLight">#303F9F</color>
-    <color name="colorSecondaryTextLight">#70000000</color>
-    <color name="colorHintTextLight">#50000000</color>
 
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#000000</color>
+
+    <color name="indigo">#9FA8DA</color>
+    <color name="yellow">#FFF59D</color>
+    <color name="green">#A5D6A7</color>
+    <color name="blue">#90CAF9</color>
+    <color name="red">#EF9A9A</color>
+    <color name="purple">#CE93D8</color>
+    <color name="pink">#F48FB1</color>
+
+    <color name="text_secondary">#70000000</color>
 
 </resources>
