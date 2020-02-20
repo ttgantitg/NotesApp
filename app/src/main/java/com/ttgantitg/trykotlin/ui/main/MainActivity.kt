@@ -63,7 +63,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
             titleResource = R.string.log_out
             messageResource = R.string.logout_dialog_message
             positiveButton(R.string.logout_dialog_yes) { onLogout() }
-            neutralPressed(R.string.logout_dialog_no) { dialog -> dialog.dismiss() }
+            negativeButton(R.string.logout_dialog_no) { dialog -> dialog.dismiss() }
         }.show()
     }
 

@@ -124,7 +124,7 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
     private fun deleteNote() {
         alert {
             messageResource = R.string.note_delete_message
-            neutralPressed(R.string.logout_dialog_no) { dialog -> dialog.dismiss() }
+            negativeButton(R.string.logout_dialog_no) { dialog -> dialog.dismiss() }
             positiveButton(R.string.logout_dialog_yes) { model.deleteNote() }
         }.show()
     }
