@@ -33,7 +33,7 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
     override val layoutRes = R.layout.activity_note
     override val model: NoteViewModel by viewModel()
     private var note: Note? = null
-    var color = Note.Color.INDIGO
+    var color = Note.Color.BROWN
 
     private val textChangeListener = object : TextWatcher{
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
@@ -67,8 +67,9 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
     private fun initView() {
         note?.let {
             removeEditListener()
-            et_title.setText(it.title)
-            et_body.setText(it.text)
+            if (et_title.text.toString() != it.title) et_title.setText(it.title)
+            if (et_body.text.toString() != it.text) et_body.setText(it.text)
+            color = it.color
             toolbar.setBackgroundColor(it.color.getColorInt(this))
             supportActionBar?.title = SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(it.lastChanged)
         } ?: let {
@@ -135,7 +136,7 @@ class NoteActivity: BaseActivity<NoteViewState.Data, NoteViewState>() {
     }
 
     private fun setEditListener(){
-        et_title.removeTextChangedListener(textChangeListener)
-        et_body.removeTextChangedListener(textChangeListener)
+        et_title.addTextChangedListener(textChangeListener)
+        et_body.addTextChangedListener(textChangeListener)
     }
 }

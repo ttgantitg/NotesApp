@@ -1,5 +1,6 @@
 package com.ttgantitg.trykotlin.ui.main
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import com.ttgantitg.trykotlin.data.NotesRepository
 import com.ttgantitg.trykotlin.data.entity.Note
@@ -30,7 +31,8 @@ class MainViewModel(notesRepository: NotesRepository) : BaseViewModel<List<Note>
         repositoryNotes.observeForever(notesObserver)
     }
 
-    override fun onCleared() {
+    @VisibleForTesting
+    public override fun onCleared() {
         repositoryNotes.removeObserver(notesObserver)
         super.onCleared()
     }

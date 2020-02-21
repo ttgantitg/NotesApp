@@ -38,7 +38,7 @@ class FireStoreProvider(private val firebaseAuth: FirebaseAuth, private val fire
                     throw it
                 } ?: let {
                     snapshot?.let { snapshot ->
-                        value = NoteResult.Success(snapshot.map { it.toObject(Note::class.java) })
+                        value = NoteResult.Success(snapshot.documents.map { it.toObject(Note::class.java) })
                     }
                 }
             }

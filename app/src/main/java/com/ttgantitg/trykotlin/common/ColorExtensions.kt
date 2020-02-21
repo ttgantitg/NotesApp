@@ -15,6 +15,7 @@ fun Note.Color.getColorInt(context: Context): Int =
             Note.Color.PINK -> R.color.pink
             Note.Color.GREEN -> R.color.green
             Note.Color.BLUE -> R.color.blue
+            Note.Color.BROWN -> R.color.brown
         }
     )
 
@@ -27,4 +28,5 @@ fun Note.Color.getColorRes(): Int = when (this) {
     Note.Color.PINK -> R.color.pink
     Note.Color.GREEN -> R.color.green
     Note.Color.BLUE -> R.color.blue
+    Note.Color.BROWN -> R.color.brown
 }

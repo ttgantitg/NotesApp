@@ -10,8 +10,10 @@
     <color name="green">#A5D6A7</color>
     <color name="blue">#90CAF9</color>
     <color name="red">#EF9A9A</color>
+    <color name="grey">#EEEEEE</color>
     <color name="purple">#CE93D8</color>
     <color name="pink">#F48FB1</color>
+    <color name="brown">#BCAAA4</color>
 
     <color name="text_secondary">#70000000</color>
 
