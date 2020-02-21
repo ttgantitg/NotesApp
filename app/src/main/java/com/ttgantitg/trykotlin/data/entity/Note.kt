@@ -9,7 +9,7 @@ data class Note (
     val id: String = "",
     val title: String = "",
     val text: String = "",
-    val color: Color = Color.INDIGO,
+    val color: Color = Color.BROWN,
     val lastChanged: Date = Date()
 ): Parcelable {
 
@@ -38,6 +38,7 @@ data class Note (
         BLUE,
         RED,
         INDIGO,
-        PINK
+        PINK,
+        BROWN
     }
 }

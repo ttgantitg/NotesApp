@@ -1,5 +1,6 @@
 package com.ttgantitg.trykotlin.ui.note
 
+import androidx.annotation.VisibleForTesting
 import com.ttgantitg.trykotlin.data.NotesRepository
 import com.ttgantitg.trykotlin.data.entity.Note
 import com.ttgantitg.trykotlin.data.model.NoteResult
@@ -36,7 +37,8 @@ class NoteViewModel(private val notesRepository: NotesRepository): BaseViewModel
         }
     }
 
-    override fun onCleared() {
+    @VisibleForTesting
+    public override fun onCleared() {
         pendingNote?.let { notesRepository.saveNote(it) }
     }
 }
