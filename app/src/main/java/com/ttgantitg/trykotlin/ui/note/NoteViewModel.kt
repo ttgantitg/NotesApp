@@ -3,42 +3,58 @@ package com.ttgantitg.trykotlin.ui.note
 import androidx.annotation.VisibleForTesting
 import com.ttgantitg.trykotlin.data.NotesRepository
 import com.ttgantitg.trykotlin.data.entity.Note
-import com.ttgantitg.trykotlin.data.model.NoteResult
 import com.ttgantitg.trykotlin.ui.base.BaseViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
-class NoteViewModel(private val notesRepository: NotesRepository): BaseViewModel<NoteViewState.Data, NoteViewState>() {
+class NoteViewModel(private val notesRepository: NotesRepository): BaseViewModel<NoteData>() {
 
+    @ExperimentalCoroutinesApi
     private val pendingNote: Note?
-        get() = viewStateLiveData.value?.data?.note
+        get() = getViewState().poll()?.note
 
+    @ExperimentalCoroutinesApi
     fun save(note: Note) {
-        viewStateLiveData.value = NoteViewState(NoteViewState.Data (note = note))
+        setData(NoteData(note = note))
     }
 
+    @ExperimentalCoroutinesApi
     fun loadNote(noteId: String) {
-        notesRepository.getNoteById(noteId).observeForever { result ->
-            result?.let {
-                viewStateLiveData.value = when (result) {
-                    is NoteResult.Success<*> -> NoteViewState(NoteViewState.Data (note = result.data as Note))
-                    is NoteResult.Error -> NoteViewState(error = result.error)
-                }
+        launch {
+            try {
+                setData(NoteData(note = notesRepository.getNoteById(noteId)))
+            } catch (e: Throwable) {
+                setError(e)
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
     fun deleteNote() {
-        pendingNote?.let {
-            notesRepository.deleteNote(it.id).observeForever { result ->
-                viewStateLiveData.value = when(result) {
-                    is NoteResult.Success<*> -> NoteViewState(NoteViewState.Data (isDeleted = true))
-                    is NoteResult.Error -> NoteViewState(error = result.error)
+        pendingNote?.let { note ->
+            launch {
+                try {
+                    notesRepository.deleteNote(note.id)
+                    setData(NoteData(isDeleted = true))
+                } catch (e: Throwable) {
+                    setError(e)
                 }
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
     @VisibleForTesting
     public override fun onCleared() {
-        pendingNote?.let { notesRepository.saveNote(it) }
+        launch {
+            pendingNote?.let {
+                try {
+                    notesRepository.saveNote(it)
+                } catch (e: Throwable) {
+                    setError(e)
+                }
+            }
+            super.onCleared()
+        }
     }
 }

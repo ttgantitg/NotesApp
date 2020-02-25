@@ -5,8 +5,8 @@ import com.ttgantitg.trykotlin.data.provider.RemoteDataProvider
 
 class NotesRepository(private val remoteProvider: RemoteDataProvider) {
     fun getNotes() = remoteProvider.subscribeToAllNotes()
-    fun saveNote(note: Note) = remoteProvider.saveNote(note)
-    fun getNoteById(id: String) = remoteProvider.getNoteById(id)
-    fun getCurrentUser() = remoteProvider.getCurrentUser()
-    fun deleteNote(id: String) = remoteProvider.deleteNote(id)
+    suspend fun saveNote(note: Note) = remoteProvider.saveNote(note)
+    suspend fun getNoteById(id: String) = remoteProvider.getNoteById(id)
+    suspend fun getCurrentUser() = remoteProvider.getCurrentUser()
+    suspend fun deleteNote(id: String) = remoteProvider.deleteNote(id)
 }

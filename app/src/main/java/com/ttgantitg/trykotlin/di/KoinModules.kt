@@ -8,6 +8,7 @@ import com.ttgantitg.trykotlin.data.provider.RemoteDataProvider
 import com.ttgantitg.trykotlin.ui.main.MainViewModel
 import com.ttgantitg.trykotlin.ui.note.NoteViewModel
 import com.ttgantitg.trykotlin.ui.splash.SplashViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -22,6 +23,7 @@ val splashModule = module {
     viewModel { SplashViewModel(get()) }
 }
 
+@ExperimentalCoroutinesApi
 val mainModule = module {
     viewModel { MainViewModel(get()) }
 }

@@ -1,22 +1,28 @@
 package com.ttgantitg.trykotlin.data.provider
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.*
-import com.squareup.okhttp.internal.DiskLruCache
 import com.ttgantitg.trykotlin.data.entity.Note
 import com.ttgantitg.trykotlin.data.errors.NoAuthException
 import com.ttgantitg.trykotlin.data.model.NoteResult
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.Assert.*
 
 class FireStoreProviderTest {
 
-    @get:Rule
-    val taskExecutorRule = InstantTaskExecutorRule()
+    @ExperimentalCoroutinesApi
+    private  val testDispatcher =  TestCoroutineDispatcher()
 
     private val mockDB = mockk<FirebaseFirestore>()
     private val mockAuth = mockk<FirebaseAuth>()
@@ -46,6 +52,7 @@ class FireStoreProviderTest {
 
     @Before
     fun setup() {
+        Dispatchers.setMain(testDispatcher)
         clearAllMocks()
         every { mockAuth.currentUser } returns mockUser
         every { mockUser.uid } returns ""
@@ -55,17 +62,27 @@ class FireStoreProviderTest {
         every { mockDocument3.toObject(Note::class.java) } returns testNotes[2]
     }
 
+    @ExperimentalCoroutinesApi
     @After
     fun tearDown() {
-
+        clearAllMocks()
+        unmockkAll()
+        Dispatchers.resetMain()
+        testDispatcher.cleanupTestCoroutines ()
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun `should throw NoAuthException if no auth`() {
         var result: Any? = null
         every { mockAuth.currentUser } returns null
-        provider.subscribeToAllNotes().observeForever {
-            result = (it as? NoteResult.Error)?.error
+
+        MainScope().launch {
+            provider.subscribeToAllNotes().consumeEach {
+                if(it is NoteResult.Error){
+                    result = it.error
+                }
+            }
         }
         assertTrue(result is NoAuthException)
     }
@@ -74,7 +91,9 @@ class FireStoreProviderTest {
     fun `saveNote calls set`() {
         val mockDocumentReference = mockk<DocumentReference>()
         every { mockResultCollection.document(testNotes[0].id) } returns mockDocumentReference
-        provider.saveNote(testNotes[0])
+        MainScope().launch {
+            provider.saveNote(testNotes[0])
+        }
         verify(exactly = 1) { mockDocumentReference.set(testNotes[0]) }
     }
 
@@ -86,8 +105,11 @@ class FireStoreProviderTest {
 
         every { mockSnapshot.documents } returns listOf(mockDocument1, mockDocument2, mockDocument3)
         every { mockResultCollection.addSnapshotListener(capture(slot)) } returns mockk()
-        provider.subscribeToAllNotes().observeForever {
-            result = (it as? NoteResult.Success<List<Note>>)?.data
+
+        MainScope().launch {
+            provider.subscribeToAllNotes().consumeEach {
+                result = (it as? NoteResult.Success<List<Note>>)?.data
+            }
         }
         slot.captured.onEvent(mockSnapshot, null)
         assertEquals(testNotes, result)
@@ -99,8 +121,11 @@ class FireStoreProviderTest {
         val slot = slot<EventListener<QuerySnapshot>>()
 
         every { mockResultCollection.addSnapshotListener(capture(slot)) } returns mockk()
-        provider.subscribeToAllNotes().observeForever {
-            result = (it as? NoteResult.Error)?.error
+
+        MainScope().launch {
+            provider.subscribeToAllNotes().consumeEach {
+                result = (it as NoteResult.Error).error
+            }
         }
         slot.captured.onEvent(null, testError)
         assertEquals(testError, result)
@@ -110,7 +135,9 @@ class FireStoreProviderTest {
     fun `deleteNote calls document delete`() {
         val mockDocumentReference = mockk<DocumentReference>()
         every { mockResultCollection.document(testNotes[0].id) } returns mockDocumentReference
-        provider.deleteNote(testNotes[0].id)
+        MainScope().launch {
+            provider.deleteNote(testNotes[0].id)
+        }
         verify(exactly = 1) { mockDocumentReference.delete() }
     }
 
@@ -128,15 +155,12 @@ class FireStoreProviderTest {
                 .addOnSuccessListener(capture(slot))
                 .addOnFailureListener(capture(slot()))} returns mockk()
 
-        provider.getNoteById(id).observeForever {
-            result = (it as? NoteResult.Success<Note>)?.data
+        MainScope().launch {
+            result = provider.getNoteById(id)
         }
-
         slot.captured.onSuccess(mockDocument1)
         assertNotNull(result)
         assertEquals(testNotes[0], result)
-
         verify(exactly = 1) { mockResultCollection.document(any()).get() }
     }
-
 }
