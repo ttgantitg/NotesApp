@@ -5,7 +5,7 @@ import com.ttgantitg.trykotlin.ui.base.BaseActivity
 import com.ttgantitg.trykotlin.ui.main.MainActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class SplashActivity : BaseActivity<Boolean?, SplashViewState>() {
+class SplashActivity : BaseActivity<Boolean?>() {
 
     override val model: SplashViewModel by viewModel()
 
