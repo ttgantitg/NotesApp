@@ -4,5 +4,5 @@ Android app "Notes"
 The application for creating notes with different colors.
 <br>
 <br>
-<img height="300" src="https://i.ibb.co/TLkX4gm/notes11.jpg">
+<img height="2000" src="https://i.ibb.co/TLkX4gm/notes11.jpg">
 <br>
